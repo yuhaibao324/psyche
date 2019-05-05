@@ -1,7 +1,6 @@
 package com.tedu.psyche.service;
 
 import com.tedu.psyche.utils.HDFSUtil;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
@@ -13,6 +12,8 @@ import org.apache.hadoop.mapreduce.Mapper;
 import org.apache.hadoop.mapreduce.Reducer;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.StringTokenizer;
@@ -23,8 +24,8 @@ import java.util.StringTokenizer;
  * @author liang
  * @date 2019/04/30
  */
-@Slf4j
 public class StockIndustryAnalyze {
+    private static Logger log = LoggerFactory.getLogger(StockIndustryAnalyze.class);
     static String input = "hdfs://192.168.221.115:9000/opt/hadoop/data/stocks.csv";
     static String output="hdfs://192.168.221.115:9000/opt/hadoop/output/";
     static {

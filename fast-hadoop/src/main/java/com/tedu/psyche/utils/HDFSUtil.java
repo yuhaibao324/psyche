@@ -1,9 +1,13 @@
 package com.tedu.psyche.utils;
 
-import lombok.extern.slf4j.Slf4j;
+import com.liangliang.fastbase.exception.ExceptionLog;
+import com.tedu.psyche.service.StockAreaAnalyze;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.*;
 import org.apache.hadoop.io.IOUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -17,8 +21,9 @@ import java.util.List;
  * @author liang
  * @date 2019/04/30
  */
-@Slf4j
 public class HDFSUtil {
+    private static Logger log = LoggerFactory.getLogger(HDFSUtil.class);
+
     static {
         System.setProperty("hadoop.home.dir", "/Users/sunliangliang/Documents/develop-tools/hadoop-3.1.2");
     }
@@ -102,18 +107,20 @@ public class HDFSUtil {
      * @return
      * @throws IOException
      */
-    public static List<String> readLine(Configuration conf, String filePath) throws IOException {
+    public static List<String> readLine(Configuration conf, String filePath){
         List<String> lines = new ArrayList<>();
         InputStream in = null;
         Path file = new Path(filePath);
-        FileSystem fileSystem = file.getFileSystem(conf);
-        in = fileSystem.open(file);
-        BufferedReader reader = new BufferedReader(new InputStreamReader(in));
-        while(reader.ready()) {
-            String line = reader.readLine();
-            lines.add(line);
-            String []stock = line.split("\\s+");
-            log.info(">>>>area = {}, count = {}",stock[0],stock[1]);
+        try {
+            FileSystem fileSystem = file.getFileSystem(conf);
+            in = fileSystem.open(file);
+            BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+            while(reader.ready()) {
+                String line = reader.readLine();
+                lines.add(line);
+            }
+        }catch (IOException e){
+            log.error("readLine error : error = {}",ExceptionLog.getErrorStack(e));
         }
         return lines;
     }

@@ -2,7 +2,6 @@ package com.tedu.psyche.service;
 
 
 import com.tedu.psyche.utils.HDFSUtil;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.IntWritable;
@@ -13,11 +12,14 @@ import org.apache.hadoop.mapreduce.Mapper;
 import org.apache.hadoop.mapreduce.Reducer;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 
-@Slf4j
 public class WordCount {
+    private static Logger log = LoggerFactory.getLogger(WordCount.class);
+
     public static class MyMapper extends Mapper<LongWritable, Text, Text, IntWritable> {
         public void map(LongWritable key, Text value, Context context)
                 throws IOException, InterruptedException {
