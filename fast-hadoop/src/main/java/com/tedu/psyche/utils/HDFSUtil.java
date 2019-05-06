@@ -44,7 +44,7 @@ public class HDFSUtil {
             log.info("{fdfspath}:{}",fileStatus.getPath());
         }
     }
-    public void upload() throws IOException {
+    public static void upload() throws IOException {
         long currentTimeMillis = System.currentTimeMillis();
         Configuration conf = new Configuration();
         conf.set("fs.defaultFS", "hdfs://192.168.221.115:9000");
@@ -111,14 +111,22 @@ public class HDFSUtil {
         List<String> lines = new ArrayList<>();
         InputStream in = null;
         Path file = new Path(filePath);
+        long before = System.currentTimeMillis();
         try {
             FileSystem fileSystem = file.getFileSystem(conf);
             in = fileSystem.open(file);
-            BufferedReader reader = new BufferedReader(new InputStreamReader(in));
-            while(reader.ready()) {
-                String line = reader.readLine();
-                lines.add(line);
+            BufferedReader reader = new BufferedReader(new InputStreamReader(in),60 * 1024 * 1024);
+//            while(reader.ready()) {
+//                String line = reader.readLine();
+//                lines.add(line);
+//            }
+            String text = null;
+            while ((text = reader.readLine())!=null){
+                log.info(">>>>>>text = {}",text);
+                lines.add(text);
             }
+            long end = System.currentTimeMillis();
+            log.info(">>>hadoop cost  = {}",(end-before));
         }catch (IOException e){
             log.error("readLine error : error = {}",ExceptionLog.getErrorStack(e));
         }
@@ -148,7 +156,8 @@ public class HDFSUtil {
     }
 
     public static void main(String[] args) throws IOException {
-//        listFiles();
+        listFiles();
+//        upload();
         Configuration conf = new Configuration();
         conf.set("fs.defaultFS", "hdfs://192.168.221.115:9000");
         readLine(conf,"hdfs://192.168.221.115:9000/opt/hadoop/output/part-r-00000");

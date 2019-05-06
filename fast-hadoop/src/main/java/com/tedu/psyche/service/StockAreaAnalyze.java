@@ -27,7 +27,7 @@ import java.util.StringTokenizer;
 public class StockAreaAnalyze {
     private static Logger log = LoggerFactory.getLogger(StockAreaAnalyze.class);
     static String input = "hdfs://192.168.221.115:9000/opt/hadoop/data/stocks.csv";
-    static String output="hdfs://192.168.221.115:9000/opt/hadoop/output/";
+    static String output="hdfs://192.168.221.115:9000/opt/hadoop/output/area";
     static {
         System.setProperty("hadoop.home.dir", "/Users/sunliangliang/Documents/develop-tools/hadoop-3.1.2");
     }

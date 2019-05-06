@@ -1,6 +1,6 @@
 package com.tedu.psyche.service;
 
-import com.tedu.psyche.dto.StockArea;
+import com.tedu.psyche.dto.StockAnaly;
 import com.tedu.psyche.utils.HDFSUtil;
 import org.apache.hadoop.conf.Configuration;
 import org.slf4j.Logger;
@@ -33,21 +33,40 @@ public class StockService {
         return conf;
     }
 
-    public List<StockArea> count(){
+    public List<StockAnaly> area(){
+        String filePath = hdfsDomain + location +"/area"+ "/part-r-00000";
+        List<StockAnaly> list = baseCount(filePath);
+        return list;
+    }
+
+    public List<StockAnaly> industry(){
+         String filePath = hdfsDomain + location +"/industry"+ "/part-r-00000";
+        List<StockAnaly> list = baseCount(filePath);
+        return list;
+    }
+
+
+
+    public List<StockAnaly> baseCount(String filePath){
         Configuration configuration =  build();
-        List<StockArea> areaList = new ArrayList<>();
-        String filePath = hdfsDomain + location + "/part-r-00000";
+        List<StockAnaly> datas = new ArrayList<>();
         List<String> lines = HDFSUtil.readLine(configuration,filePath);
+        long end = System.currentTimeMillis();
         if (lines.isEmpty()){
             return new ArrayList<>();
         }
         for (String line:lines){
             String []stock = line.split("\\s+");
-            log.info(">>>>area = {}, count = {}",stock[0],stock[1]);
-            StockArea area = new StockArea(stock[0],Integer.parseInt(stock[1]));
-            areaList.add(area);
+            log.info(">>>>name = {}, value = {}",stock[0],stock[1]);
+            String name = stock[0];
+            StockAnaly area = new StockAnaly(name,Double.parseDouble(stock[1]));
+            datas.add(area);
         }
-        return areaList;
+        return datas;
     }
+
+
+
+
 
 }
