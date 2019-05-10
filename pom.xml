@@ -18,6 +18,7 @@
         <module>fast-hadoop</module>
         <module>fast-flink</module>
         <module>fast-plugins</module>
+        <module>fast-spark</module>
     </modules>
 
 

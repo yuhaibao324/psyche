@@ -1,6 +1,9 @@
 package com.tedu.psyche.service;
 
+import com.tedu.psyche.dao.StatisticsRecordsMapper;
 import com.tedu.psyche.dto.StockAnaly;
+import com.tedu.psyche.entity.StatisticsRecord;
+import com.tedu.psyche.enums.DimenoEnum;
 import com.tedu.psyche.utils.HDFSUtil;
 import org.apache.hadoop.conf.Configuration;
 import org.slf4j.Logger;
@@ -8,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,6 +28,8 @@ public class StockService {
     private String hdfsDomain;
     @Value("${hadoop.hdfs.location}")
     private String location;
+    @Resource
+    private StatisticsRecordsMapper mapper;
     private Configuration conf;
     public Configuration build(){
         if (conf == null){
@@ -33,39 +39,59 @@ public class StockService {
         return conf;
     }
 
-    public List<StockAnaly> area(){
+    public List<StatisticsRecord> area(){
         String filePath = hdfsDomain + location +"/area"+ "/part-r-00000";
-        List<StockAnaly> list = baseCount(filePath);
+        List<StatisticsRecord> list = mapper.list(DimenoEnum.LOCATION.getType());
+        if (list==null || list.isEmpty()){
+            list = baseCount(filePath,DimenoEnum.LOCATION);
+            mapper.batchInsert(list);
+        }
+
         return list;
     }
 
-    public List<StockAnaly> industry(){
+    public List<StatisticsRecord> industry(){
          String filePath = hdfsDomain + location +"/industry"+ "/part-r-00000";
-        List<StockAnaly> list = baseCount(filePath);
+        List<StatisticsRecord> list = mapper.list(DimenoEnum.INDUSTRY.getType());
+        if (list==null || list.isEmpty()){
+            list = baseCount(filePath,DimenoEnum.INDUSTRY);
+            mapper.batchInsert(list);
+        }
         return list;
     }
 
 
-
-    public List<StockAnaly> baseCount(String filePath){
+    public List<StatisticsRecord> baseCount(String filePath, DimenoEnum dimeno){
         Configuration configuration =  build();
-        List<StockAnaly> datas = new ArrayList<>();
+        List<StatisticsRecord> datas = new ArrayList<>();
         List<String> lines = HDFSUtil.readLine(configuration,filePath);
-        long end = System.currentTimeMillis();
         if (lines.isEmpty()){
             return new ArrayList<>();
         }
         for (String line:lines){
             String []stock = line.split("\\s+");
-            log.info(">>>>name = {}, value = {}",stock[0],stock[1]);
             String name = stock[0];
-            StockAnaly area = new StockAnaly(name,Double.parseDouble(stock[1]));
-            datas.add(area);
+            StatisticsRecord record = new StatisticsRecord();
+            record.setType(dimeno.getType());
+            record.setName(name);
+            record.setValue(Double.parseDouble(stock[1]));
+            datas.add(record);
         }
         return datas;
     }
 
 
+
+
+    public List<StatisticsRecord> stockPrice(){
+        String filePath = hdfsDomain + location + "/price-amount-r-00000";
+        List<StatisticsRecord> list = mapper.list(DimenoEnum.PRICE_AMOUNT.getType());
+        if (list==null || list.isEmpty()){
+            list = baseCount(filePath,DimenoEnum.PRICE_AMOUNT);
+            mapper.batchInsert(list);
+        }
+        return list;
+    }
 
 
 

@@ -49,7 +49,7 @@ public class HDFSUtil {
         Configuration conf = new Configuration();
         conf.set("fs.defaultFS", "hdfs://192.168.221.115:9000");
         FileSystem fs = FileSystem.get(conf);
-        fs.copyFromLocalFile(new Path("/Users/sunliangliang/Documents/personal/stocks.csv"), new Path("hdfs://192.168.221.115:9000/opt/hadoop/data/"));  //第一个为本地文件路径,第二个为hadoop路径
+        fs.copyFromLocalFile(new Path("/Users/sunliangliang/Documents/personal/csv/000002.csv"), new Path("hdfs://192.168.221.115:9000/opt/hadoop/data"));  //第一个为本地文件路径,第二个为hadoop路径
         long cost = System.currentTimeMillis() - currentTimeMillis;
         log.info(">>>>>upload  success<<< , ${cost} = {} ",cost);
     }
@@ -116,13 +116,8 @@ public class HDFSUtil {
             FileSystem fileSystem = file.getFileSystem(conf);
             in = fileSystem.open(file);
             BufferedReader reader = new BufferedReader(new InputStreamReader(in),60 * 1024 * 1024);
-//            while(reader.ready()) {
-//                String line = reader.readLine();
-//                lines.add(line);
-//            }
             String text = null;
             while ((text = reader.readLine())!=null){
-                log.info(">>>>>>text = {}",text);
                 lines.add(text);
             }
             long end = System.currentTimeMillis();
@@ -156,10 +151,12 @@ public class HDFSUtil {
     }
 
     public static void main(String[] args) throws IOException {
+        upload();
         listFiles();
-//        upload();
         Configuration conf = new Configuration();
         conf.set("fs.defaultFS", "hdfs://192.168.221.115:9000");
-        readLine(conf,"hdfs://192.168.221.115:9000/opt/hadoop/output/part-r-00000");
+        cat(conf,"hdfs://192.168.221.115:9000/opt/hadoop/data/00002.csv");
     }
 }
+
+
