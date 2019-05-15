@@ -4,8 +4,15 @@ import com.liangliang.psyche.Record;
 import org.apache.spark.SparkConf;
 import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.api.java.JavaSparkContext;
+import org.apache.spark.api.java.function.FlatMapFunction;
 import org.apache.spark.api.java.function.Function;
 import org.apache.spark.sql.SQLContext;
+import org.mortbay.util.ajax.JSON;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.Arrays;
+import java.util.Iterator;
 
 /**
  * Describe:
@@ -14,21 +21,28 @@ import org.apache.spark.sql.SQLContext;
  * @Since 2019/05/07
  */
 public class CSVDemo {
+    private static Logger log = LoggerFactory.getLogger(CSVDemo.class);
     public static void main(String[] args) {
         SparkConf conf = new SparkConf()
                 .setAppName("WordCountLocal")
                 .setMaster("local");
         JavaSparkContext sc = new JavaSparkContext(conf);
 
-        JavaRDD<Record> records = sc.textFile("/Users/sunliangliang/Documents/personal/csv/000002.csv").map(
-                new Function<String, Record>() {
-                    public Record call(String line) throws Exception {
-                        String[] fields = line.split(",");
-                        Record sd = new Record(fields[0], fields[1], fields[2].trim(), fields[3]);
-                        return sd;
-                    }
-                });
+        JavaRDD<String> records = sc.textFile("/Users/sunliangliang/Documents/personal/csv/000001.csv");
 
+        JavaRDD<String> words = records.flatMap(new FlatMapFunction<String, String>() {
+            @Override
+            public Iterator<String> call(String record) throws Exception {
+                log.info(">>>>> record = {}",JSON.toString(record));
+                return Arrays.asList(record.split(",")).iterator();
+            }
+        });
+
+        for (String word:words.collect()){
+
+            log.info(">>>word = {}",word);
+
+        }
 
 
     }

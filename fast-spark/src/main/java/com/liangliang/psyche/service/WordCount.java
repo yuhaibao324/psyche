@@ -77,8 +77,6 @@ public class WordCount {
             }
 
         });
-
-
         // 接着，需要将每一个单词，映射为(单词, 1)的这种格式
         // 因为只有这样，后面才能根据单词作为key，来进行每个单词的出现次数的累加
         // mapToPair，其实就是将每个元素，映射为一个(v1,v2)这样的Tuple2类型的元素
@@ -130,7 +128,7 @@ public class WordCount {
 
             @Override
             public void call(Tuple2<String, Integer> wordCount) throws Exception {
-//                System.out.println(wordCount._1 + " 出现 " + wordCount._2 + " 次");
+                System.out.println(wordCount._1 + " 出现 " + wordCount._2 + " 次");
             }
 
         });
