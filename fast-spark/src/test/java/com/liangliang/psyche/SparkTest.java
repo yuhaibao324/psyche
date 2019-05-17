@@ -1,11 +1,9 @@
 package com.liangliang.psyche;
 
-import com.clearspring.analytics.util.Lists;
-import org.apache.avro.TestAnnotation;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.spark.SparkConf;
 import org.apache.spark.api.java.JavaDoubleRDD;
-import org.apache.spark.api.java.JavaPairRDD;
 import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.api.java.JavaSparkContext;
 import org.apache.spark.api.java.function.*;
@@ -61,14 +59,6 @@ public class SparkTest {
 
     public static void main(String[] args) {
 
-        JavaRDD<Integer> datas = sc.parallelize(Arrays.asList(1,2,3,4,5));
-        JavaDoubleRDD result = datas.mapToDouble(new DoubleFunction<Integer>() {
-            @Override
-            public double call(Integer x) throws Exception {
-                return (double) x+x;
-            }
-        });
-        System.out.println(result.mean());
 
     }
 

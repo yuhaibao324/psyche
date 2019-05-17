@@ -1,9 +1,9 @@
 package com.liangliang.psyche;
 
 import org.apache.spark.SparkConf;
-import org.apache.spark.api.java.JavaPairRDD;
 import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.api.java.JavaSparkContext;
+import org.apache.spark.api.java.function.Function2;
 
 /**
  * Describe:
@@ -41,10 +41,37 @@ public class ReadAndSave {
 
     }
 
+    public static void csv() {
+        JavaRDD<String> csvFile1 = sc.textFile("/Users/sunliangliang/Documents/personal/csv/000001.csv");
+        JavaRDD<String[]> csvData = csvFile1.map(new ParseLine());
+        csvData.reduce(new Function2<String[], String[], String[]>() {
+            @Override
+            public String[] call(String[] v1, String[] v2) throws Exception {
+                return new String[0];
+            }
+        });
+
+
+
+
+        csvData.foreach(x->{
+                    for(String s : x){
+                        System.out.println(s);
+                    }
+                }
+        );
+    }
+
+
+    public static void csvPairs(){
+
+
+
+    }
+
 
     public static void main(String[] args) {
-        readTxt();
-        readCsv();
+        csv();
     }
 
 }

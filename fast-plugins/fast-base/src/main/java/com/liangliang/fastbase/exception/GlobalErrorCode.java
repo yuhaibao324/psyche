@@ -1,9 +1,10 @@
 package com.liangliang.fastbase.exception;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
-import com.google.common.collect.Maps;
+
 import org.springframework.util.Assert;
 
+import java.util.HashMap;
 import java.util.Map;
 
 public enum GlobalErrorCode implements ErrorCode{
@@ -41,7 +42,7 @@ public enum GlobalErrorCode implements ErrorCode{
         return message;
     }
 
-    private static Map<Integer, GlobalErrorCode> map = Maps.newHashMapWithExpectedSize(GlobalErrorCode.values().length);
+    private static Map<Integer, GlobalErrorCode> map =new HashMap<>(GlobalErrorCode.values().length);
 
     static {
         for (GlobalErrorCode errorCode : GlobalErrorCode.values()) {

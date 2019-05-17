@@ -26,8 +26,8 @@ import java.util.StringTokenizer;
  */
 public class Average {
     private static Logger log = LoggerFactory.getLogger(Average.class);
-    static String input = "hdfs://192.168.221.115:9000/opt/hadoop/data/000002.csv";
-    static String output="hdfs://192.168.221.115:9000/opt/hadoop/output";
+    static String input = "hdfs://192.168.221.143:9000/opt/hadoop/data/000002.csv";
+    static String output="hdfs://192.168.221.143:9000/opt/hadoop/output";
     public static class AverageMapper extends Mapper<Object, Text, Text, DoubleWritable> {
         @Override
         protected void map(Object key, Text value, Context context) throws IOException, InterruptedException {

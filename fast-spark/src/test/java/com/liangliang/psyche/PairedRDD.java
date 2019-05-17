@@ -7,7 +7,8 @@ import org.apache.spark.api.java.JavaSparkContext;
 import org.apache.spark.api.java.function.PairFunction;
 import org.apache.spark.api.java.function.VoidFunction;
 import org.mortbay.util.ajax.JSON;
-import org.omg.CORBA.PUBLIC_MEMBER;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import scala.Tuple2;
 
 import java.util.Arrays;
@@ -21,6 +22,7 @@ import java.util.Map;
  * @Since 2019/05/14
  */
 public class PairedRDD {
+    private static Logger log = LoggerFactory.getLogger(PairedRDD.class);
     private static JavaSparkContext sc;
 
     static {
@@ -74,10 +76,17 @@ public class PairedRDD {
         System.out.println(JSON.toString(countMAp));
     }
 
+    public static void read(){
+        JavaRDD<String> input = sc.textFile("/Users/sunliangliang/Documents/personal/stocks.csv");
+
+        input.collect();
+
+
+    }
 
 
     public static void main(String[] args) {
-        countByKey();
+        read();
     }
 
 }

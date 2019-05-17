@@ -1,7 +1,6 @@
 package com.liangliang.fastbase.exception.handler;
 
 import com.alibaba.fastjson.JSON;
-import com.google.common.collect.Maps;
 import com.liangliang.fastbase.exception.ArgumentException;
 import com.liangliang.fastbase.exception.BusinessException;
 import com.liangliang.fastbase.exception.ErrorCode;
@@ -26,6 +25,7 @@ import org.springframework.web.servlet.NoHandlerFoundException;
 import javax.servlet.http.HttpServletRequest;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -51,7 +51,7 @@ public class RestExceptionHandler {
     //@ResponseStatus(HttpStatus.BAD_REQUEST)
     private RestResult illegalParamsExceptionHandler(MethodArgumentNotValidException ex) {
         BindingResult bindingResult = ex.getBindingResult();
-        Map<String, String> errors = Maps.newHashMapWithExpectedSize(bindingResult
+        Map<String, String> errors = new HashMap<>(bindingResult
                 .getFieldErrorCount());
         for (FieldError fieldError : bindingResult.getFieldErrors()) {
             errors.put(fieldError.getField(), fieldError.getDefaultMessage());
@@ -62,7 +62,8 @@ public class RestExceptionHandler {
 
     @ExceptionHandler(BindException.class)
     public RestResult bindExceptionHandler(BindException ex) {
-        Map<String, String> errors = Maps.newHashMapWithExpectedSize(ex.getFieldErrorCount());
+//        Map<String, String> errors = Maps.newHashMapWithExpectedSize(ex.getFieldErrorCount());
+        Map<String, String> errors = new HashMap<>(ex.getFieldErrorCount());
         for (FieldError fieldError : ex.getFieldErrors()) {
             errors.put(fieldError.getField(), fieldError.getDefaultMessage());
         }
