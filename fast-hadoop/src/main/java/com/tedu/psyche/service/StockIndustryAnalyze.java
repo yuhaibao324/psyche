@@ -26,8 +26,8 @@ import java.util.StringTokenizer;
  */
 public class StockIndustryAnalyze {
     private static Logger log = LoggerFactory.getLogger(StockIndustryAnalyze.class);
-    static String input = "hdfs://192.168.221.115:9000/opt/hadoop/data/stocks.csv";
-    static String output="hdfs://192.168.221.115:9000/opt/hadoop/output/industry";
+    static String input = "/Users/sunliangliang/Documents/workspace/psyche/fast-hadoop/src/main/resources/stocks.csv";
+    static String output="hdfs://192.168.221.143:9000/opt/hadoop/output/industry";
     static {
         System.setProperty("hadoop.home.dir", "/Users/sunliangliang/Documents/develop-tools/hadoop-3.1.2");
     }
@@ -41,13 +41,13 @@ public class StockIndustryAnalyze {
         public void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
             // 输入的一行预处理文本
             int length = value.toString().split(",").length;
-            StringTokenizer itr = new StringTokenizer(new String(value.getBytes(),"GBK"));
+            StringTokenizer itr = new StringTokenizer(new String(value.getBytes(),"UTF-8"));
             while (itr.hasMoreTokens()) {
                 String line = itr.nextToken();
                 if (line.contains("ts_code")){
                     continue;
                 }
-                log.info(">>>> industry :{}",line);
+                log.info(">>>>line = {}",line);
                 if (!StringUtils.isEmpty(line)) {
                     String []tokens = line.split(",");
                     String industry = tokens[5];//area

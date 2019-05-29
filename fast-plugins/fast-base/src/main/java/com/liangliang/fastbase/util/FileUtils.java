@@ -59,8 +59,20 @@ public class FileUtils {
         return fileNames;
     }
 
+    public static boolean delFolders(String path){
+        File dir = new File(path);
+        if (!dir.isDirectory()){
+            return false;
+        }
+        File []files = dir.listFiles();
+        for (File file:files){
+            file.delete();
+        }
+        return true;
+    }
+
     public static void main(String[] args) {
-        listFiles("/Users/sunliangliang/Documents/personal/csv/");
+        delFolders("/Users/sunliangliang/Documents/datas/live-data/csv/");
     }
 
 }

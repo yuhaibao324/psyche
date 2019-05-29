@@ -5,6 +5,7 @@ import com.liangliang.fastbase.rest.RestResult;
 import com.liangliang.fastbase.rest.RestResultBuilder;
 import com.tedu.psyche.dao.StatisticsRecordsMapper;
 import com.tedu.psyche.dto.StockAnaly;
+import com.tedu.psyche.entity.IndustryData;
 import com.tedu.psyche.entity.StatisticsRecord;
 import com.tedu.psyche.service.StockService;
 import org.slf4j.Logger;
@@ -43,7 +44,7 @@ public class StockStatisticsController {
     @GetMapping("/industry")
     public RestResult industry(HttpServletResponse response){
         response.setHeader("Access-Control-Allow-Origin", "*");
-        List<StatisticsRecord> records = stockService.industry();
+        List<IndustryData> records = stockService.industry();
         log.info(">>>>> records = {}", JSON.toJSONString(records));
         return RestResultBuilder.builder().data(records).success().build();
     }
@@ -52,8 +53,15 @@ public class StockStatisticsController {
     public RestResult priceWithAmount(HttpServletResponse response){
         response.setHeader("Access-Control-Allow-Origin", "*");
         List<StatisticsRecord> areaList = stockService.stockPrice();
+        String [][] result = new String[areaList.size()][2];
+        int i=0;
+        for (StatisticsRecord record:areaList){
+            result[i][0]=record.getName();
+            result[i][1] = record.getValue()+"";
+            i++;
+        }
         log.info(">>>>> areas = {}", JSON.toJSONString(areaList));
-        return RestResultBuilder.builder().data(areaList).success().build();
+        return RestResultBuilder.builder().data(result).success().build();
     }
 
 

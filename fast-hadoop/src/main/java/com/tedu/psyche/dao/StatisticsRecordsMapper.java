@@ -14,6 +14,9 @@ import java.util.List;
 @Mapper
 public interface StatisticsRecordsMapper {
     List<StatisticsRecord> list(int type);
+    List<StatisticsRecord> listByLimit(int type);
     public void insert(StatisticsRecord record);
     public void batchInsert(List<StatisticsRecord> records);
+//    public int sum(int type);
+    public double total(int type);
 }

@@ -1,14 +1,18 @@
 package com.tedu.psyche.service;
 
+import com.liangliang.fastbase.util.DoubleUtils;
 import com.tedu.psyche.dao.StatisticsRecordsMapper;
 import com.tedu.psyche.dto.StockAnaly;
+import com.tedu.psyche.entity.IndustryData;
 import com.tedu.psyche.entity.StatisticsRecord;
 import com.tedu.psyche.enums.DimenoEnum;
 import com.tedu.psyche.utils.HDFSUtil;
 import org.apache.hadoop.conf.Configuration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -30,6 +34,8 @@ public class StockService {
     private String location;
     @Resource
     private StatisticsRecordsMapper mapper;
+    @Autowired
+    private MongoTemplate template;
     private Configuration conf;
     public Configuration build(){
         if (conf == null){
@@ -50,14 +56,23 @@ public class StockService {
         return list;
     }
 
-    public List<StatisticsRecord> industry(){
-         String filePath = hdfsDomain + location +"/industry"+ "/part-r-00000";
-        List<StatisticsRecord> list = mapper.list(DimenoEnum.INDUSTRY.getType());
-        if (list==null || list.isEmpty()){
-            list = baseCount(filePath,DimenoEnum.INDUSTRY);
-            mapper.batchInsert(list);
+    public List<IndustryData> industry(){
+        List<StatisticsRecord> list = mapper.listByLimit(DimenoEnum.INDUSTRY.getType());
+        double sum = 0;
+        double totalPercent = 0;
+        double total = mapper.total(DimenoEnum.INDUSTRY.getType());
+        List<IndustryData> industryDatas = new ArrayList<>();
+        for (StatisticsRecord record:list){
+            double percent = DoubleUtils.format(record.getValue()/total,2);
+            totalPercent+=percent;
+            sum+=record.getValue();
+            IndustryData industry = new IndustryData(record.getName(),record.getValue(),percent);
+            industryDatas.add(industry);
         }
-        return list;
+        List<StatisticsRecord> totalRecords = mapper.list(DimenoEnum.INDUSTRY.getType());
+        IndustryData industryData = new IndustryData("其他",total-sum, DoubleUtils.format(1-totalPercent,2));
+        industryDatas.add(industryData);
+        return industryDatas;
     }
 
 

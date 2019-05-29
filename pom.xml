@@ -19,6 +19,7 @@
         <module>fast-flink</module>
         <module>fast-plugins</module>
         <module>fast-spark</module>
+        <module>fast-rest</module>
     </modules>
 
 
